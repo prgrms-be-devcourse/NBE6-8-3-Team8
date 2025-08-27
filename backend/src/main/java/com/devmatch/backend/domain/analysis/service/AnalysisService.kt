@@ -121,7 +121,7 @@ class AnalysisService(
             reason = reason
         )
 
-        applicationService.saveAnalysisResult(result.application!!.id!!, result)
+        applicationService.saveAnalysisResult(result.application!!.id, result)
 
         return analysisRepository.save(result)
     }

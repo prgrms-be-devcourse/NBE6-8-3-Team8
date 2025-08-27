@@ -9,9 +9,9 @@ import java.math.BigDecimal
 class AnalysisResult(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0L,
 
-    @OneToOne(mappedBy = "analysisResult")
+    @OneToOne(mappedBy = "analysisResult", fetch = FetchType.LAZY)
     var application: Application? = null,
 
     @Column(name = "compatibility_score", precision = 5, scale = 2, nullable = false)
@@ -22,10 +22,10 @@ class AnalysisResult(
 ) {
     // JPA를 위한 기본 생성자 (리플렉션으로 사용됨)
     private constructor() : this(
-        id = null,
-        application = null,
-        compatibilityScore = BigDecimal.ZERO,
-        compatibilityReason = ""
+        0L,
+        null,
+        BigDecimal.ZERO,
+        ""
     )
     
     companion object {

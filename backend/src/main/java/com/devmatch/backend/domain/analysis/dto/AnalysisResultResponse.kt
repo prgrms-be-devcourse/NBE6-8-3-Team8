@@ -4,7 +4,7 @@ import com.devmatch.backend.domain.analysis.entity.AnalysisResult
 import java.math.BigDecimal
 
 data class AnalysisResultResponse(
-    val id: Long?,
+    val id: Long,
     val applicationId: Long?,
     val compatibilityScore: BigDecimal,
     val compatibilityReason: String
