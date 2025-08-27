@@ -1,98 +1,50 @@
-package com.devmatch.backend.domain.project.entity;
+package com.devmatch.backend.domain.project.entity
 
-import static jakarta.persistence.FetchType.LAZY;
+import com.devmatch.backend.domain.application.entity.Application
+import com.devmatch.backend.domain.user.entity.User
+import jakarta.persistence.*
+import java.time.LocalDateTime
 
-import com.devmatch.backend.domain.application.entity.Application;
-import com.devmatch.backend.domain.application.enums.ApplicationStatus;
-import com.devmatch.backend.domain.user.entity.User;
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
 @Entity
-@Table(
-    name = "projects",
-    indexes = {@Index(name = "idx_creator_id", columnList = "creator_id")}
-)
-public class Project {
+@Table(name = "projects", indexes = [Index(name = "idx_creator_id", columnList = "creator_id")])
+class Project(
+    val title: String,
+    val description: String,
+    val techStack: String,
+    val teamSize: Int,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "creator_id") val creator: User,
+    val durationWeeks: Int
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Enumerated(EnumType.STRING)
+    var status: ProjectStatus = ProjectStatus.RECRUITING
 
-  private String title;
-  private String description;
-  private String techStack;
+    var content = ""
+    var currentTeamSize = 0
+    val createdAt: LocalDateTime = LocalDateTime.now()
 
-  private Integer teamSize;
-  private Integer currentTeamSize;
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, orphanRemoval = true)
+    private val applications: List<Application> = emptyList()
 
-  @ManyToOne
-  @JoinColumn(name = "creator_id")
-  private User creator;
-
-  @Enumerated(EnumType.STRING)
-  private ProjectStatus status;
-
-  private String content;
-  private Integer durationWeeks;
-  private LocalDateTime createdAt;
-
-  @OneToMany(mappedBy = "project", fetch = LAZY, orphanRemoval = true)
-  private List<Application> applications;
-
-  public Project(
-      String title,
-      String description,
-      String techStack,
-      Integer teamSize,
-      User creator,
-      Integer durationWeeks
-  ) {
-    this.title = title;
-    this.description = description;
-    this.techStack = techStack;
-    this.teamSize = teamSize;
-    this.creator = creator;
-    this.status = ProjectStatus.RECRUITING;
-    this.currentTeamSize = 0;
-    this.content = "";
-    this.durationWeeks = durationWeeks;
-    this.createdAt = LocalDateTime.now();
-  }
-
-  public void changeStatus(ProjectStatus newStatus) {
-    if (newStatus == this.status) {
-      throw new IllegalArgumentException(
-          "현재 상태(%s)와 동일한 상태(%s)로 변경할 수 없습니다".formatted(this.status, newStatus));
+    fun changeStatus(newStatus: ProjectStatus) {
+        require(newStatus != status) { "현재 상태(${status})와 동일한 상태(${newStatus})로 변경할 수 없습니다" }
+        status = newStatus
     }
 
-    this.status = newStatus;
-  }
+    fun increaseCurTeamSize() {
+        require(currentTeamSize < teamSize) { "정원이 가득 차서 지원서를 더 이상 승인할 수 없습니다" }
+        currentTeamSize++
 
-  public void changeCurTeamSize(ApplicationStatus oldStatus, ApplicationStatus newStatus) {
-    if (oldStatus != ApplicationStatus.APPROVED && newStatus == ApplicationStatus.APPROVED) {
-      if (this.currentTeamSize.equals(this.teamSize)) {
-        throw new IllegalArgumentException("정원이 가득 차서 지원서를 더 이상 승인할 수 없습니다");
-      }
-
-      this.currentTeamSize++;
-    } else if (oldStatus == ApplicationStatus.APPROVED && newStatus != ApplicationStatus.APPROVED) {
-      this.currentTeamSize--;
+        if (currentTeamSize == teamSize) {
+            status = ProjectStatus.COMPLETED
+        }
     }
 
-    if (this.currentTeamSize.equals(this.teamSize)) {
-      this.status = ProjectStatus.COMPLETED;
-    } else {
-      this.status = ProjectStatus.RECRUITING;
+    fun decreaseCurTeamSize() {
+        currentTeamSize--
+        status = ProjectStatus.RECRUITING
     }
-  }
-
-  public void changeContent(String content) {
-    this.content = content;
-  }
 }
