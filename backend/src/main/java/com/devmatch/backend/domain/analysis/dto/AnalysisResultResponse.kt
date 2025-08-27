@@ -5,14 +5,14 @@ import java.math.BigDecimal
 
 data class AnalysisResultResponse(
     val id: Long,
-    val applicationId: Long?,
+    val applicationId: Long,
     val compatibilityScore: BigDecimal,
     val compatibilityReason: String
 ) {
     companion object {
         fun from(result: AnalysisResult) = AnalysisResultResponse(
             id = result.id,
-            applicationId = result.application?.id,
+            applicationId = result.application?.id ?: 0L,
             compatibilityScore = result.compatibilityScore,
             compatibilityReason = result.compatibilityReason
         )
