@@ -1,10 +1,8 @@
-package com.devmatch.backend.domain.project.repository;
+package com.devmatch.backend.domain.project.repository
 
-import com.devmatch.backend.domain.project.entity.Project;
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.devmatch.backend.domain.project.entity.Project
+import org.springframework.data.jpa.repository.JpaRepository
 
-public interface ProjectRepository extends JpaRepository<Project, Long> {
-
-  List<Project> findAllByCreatorId(Long creatorId);
+interface ProjectRepository : JpaRepository<Project, Long> {
+    fun findAllByCreatorId(creatorId: Long): List<Project>
 }
