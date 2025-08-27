@@ -13,7 +13,7 @@ data class ApplicationDetailResponseDto(
     val score: List<Int>            // 지원자의 기술 점수
 ) {
     constructor(application: Application) : this(
-        application.id,
+        application.id ?: throw IllegalStateException("지원서 ID가 존재하지 않습니다"),
         application.user.nickname,
         application.status,
         application.appliedAt,
