@@ -94,10 +94,10 @@ public class ApplicationService {
     Application application = getApplicationByApplicationId(applicationId);
 
     // 지원서의 상태를 업데이트 하면서 프로젝트에도 반영
-    application.getProject().changeCurTeamSize(application.getStatus(), reqBody.status());
+    application.getProject().changeCurTeamSize(application.getStatus(), reqBody.status);
 
     // 엔티티가 영속성 컨텍스트 안에 있으면, 트랜잭션 종료 시점에 자동으로 DB에 반영됩니다 (Dirty Checking)
-    application.changeStatus(reqBody.status()); // 상태 업데이트
+    application.changeStatus(reqBody.status); // 상태 업데이트
   }
 
   // 지원서와 프로젝트간의 적합도 분석 결과를 저장하는 로직
