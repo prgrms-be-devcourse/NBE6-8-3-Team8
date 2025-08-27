@@ -7,14 +7,21 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import java.util.*
 
+//class Member(
+//    @Column(name = "id") val _id: Int?
+//) {
+//    val id: Int
+//        get() = _id!!
+//}
 @Entity
 @Table(name = "users") // 테이블 이름을 명시적으로 지정
 class User(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long,
+    val id: Long,
     @field:Column(unique = true) @field:NotNull
     @field:Size(min = 1, max = 50, message = "사용자 이름은 1자 이상 50자 이하이어야 합니다.")
-    private var username: String,
+    var username: String,
+    var password: String? = null,
     var nickname: String,
     @field:Column(unique = true) var apiKey: String,
     var profileImgUrl: String? = null,
@@ -22,13 +29,15 @@ class User(
     constructor(id: Long, username: String, nickname: String) : this(
         id,
         username,
+        null,
         nickname,
         "",
     )
 
-    constructor(username: String, nickname: String, profileImgUrl: String?) : this(
+    constructor(username: String, password: String?, nickname: String, profileImgUrl: String?) : this(
         0L,
         username,
+        password,
         nickname,
         UUID.randomUUID().toString(), // apiKey는 UUID로 생성
         profileImgUrl
