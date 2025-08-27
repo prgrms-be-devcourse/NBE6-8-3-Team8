@@ -383,10 +383,10 @@ class ProjectControllerUnitTest {
         .andExpect(jsonPath("$.msg").value("프로젝트의 지원서 전체 목록 조회 성공"))
         .andExpect(jsonPath("$.data").isArray())
         .andExpect(jsonPath("$.data", hasSize(2))) // 배열의 크기가 2인지 확인
-        .andExpect(jsonPath("$.data[0].applicationId").value(application1.applicationId()))
-        .andExpect(jsonPath("$.data[0].nickname").value(application1.nickname()))
-        .andExpect(jsonPath("$.data[1].applicationId").value(application2.applicationId()))
-        .andExpect(jsonPath("$.data[0].nickname").value(application1.nickname()));
+        .andExpect(jsonPath("$.data[0].applicationId").value(application1.applicationId))
+        .andExpect(jsonPath("$.data[0].nickname").value(application1.nickname))
+        .andExpect(jsonPath("$.data[1].applicationId").value(application2.applicationId))
+        .andExpect(jsonPath("$.data[0].nickname").value(application1.nickname));
 
     verify(applicationService, times(1)).getApplicationsByProjectId(projectId);
   }
@@ -441,8 +441,8 @@ class ProjectControllerUnitTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.msg").value("지원서 작성 성공"))
-        .andExpect(jsonPath("$.data.applicationId").value(responseDto.applicationId()))
-        .andExpect(jsonPath("$.data.nickname").value(responseDto.nickname()));
+        .andExpect(jsonPath("$.data.applicationId").value(responseDto.applicationId))
+        .andExpect(jsonPath("$.data.nickname").value(responseDto.nickname));
 
     verify(applicationService, times(1)).createApplication(projectId, request);
   }
