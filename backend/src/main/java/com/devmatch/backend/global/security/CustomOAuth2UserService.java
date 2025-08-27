@@ -68,7 +68,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     username = providerTypeCode + "__%s".formatted(oauthUserId);
     String password = "";//소셜 로그인은 비밀번호가 없으므로 빈 문자열로 설정
 
-    User user = userService.modifyOrJoin(username, password, nickname, profileImgUrl).data();
+    User user = userService.modifyOrJoin(username, password, nickname, profileImgUrl).data;
 
     //이번 요청안에서만 로그인으로 처리. 그 이후에는 날라감
     //이 객체가 시큐리티 컨텍스트에 저장되어 최초 시점의 로그인한 유저 정보를 담고 있다

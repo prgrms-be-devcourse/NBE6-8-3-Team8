@@ -117,7 +117,7 @@ public class Rq {
       return null;
     }
 
-    return userService.findById(actor.getId()).get();
+    return userService.findById(actor.getId());
   }
 
 }
