@@ -74,8 +74,8 @@ public class ProjectService {
   @Transactional
   public ProjectDetailResponse modifyContent(Long projectId, String content) {
     Project project = getProject(projectId);
-    project.changeContent(content);
-
+    project.setContent(content);
+    
     return ProjectMapper.toProjectDetailResponse(project);
   }
 

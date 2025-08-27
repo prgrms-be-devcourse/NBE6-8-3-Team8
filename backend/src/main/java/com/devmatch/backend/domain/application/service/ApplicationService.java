@@ -30,7 +30,8 @@ public class ApplicationService {
 
   // 지원서 작성 로직
   @Transactional
-  public ApplicationDetailResponseDto createApplication(Long projectId, ProjectApplyRequest projectApplyRequest) {
+  public ApplicationDetailResponseDto createApplication(Long projectId,
+      ProjectApplyRequest projectApplyRequest) {
     User user = rq.getActor(); // 현재 로그인한 사용자의 정보 가져오기
     Project project = projectService.getProject(projectId); // 프로젝트 ID로 프로젝트 정보 가져오기
 
@@ -90,11 +91,15 @@ public class ApplicationService {
 
   // 지원서 상태 업데이트 로직
   @Transactional
-  public void updateApplicationStatus(Long applicationId, ApplicationStatusUpdateRequestDto reqBody) {
+  public void updateApplicationStatus(Long applicationId,
+      ApplicationStatusUpdateRequestDto reqBody) {
     Application application = getApplicationByApplicationId(applicationId);
 
     // 지원서의 상태를 업데이트 하면서 프로젝트에도 반영
-    application.getProject().changeCurTeamSize(application.getStatus(), reqBody.status);
+    if (application.getStatus() == ApplicationStatus.PENDING
+        && reqBody.status == ApplicationStatus.APPROVED) {
+      application.getProject().increaseCurTeamSize();
+    }
 
     // 엔티티가 영속성 컨텍스트 안에 있으면, 트랜잭션 종료 시점에 자동으로 DB에 반영됩니다 (Dirty Checking)
     application.changeStatus(reqBody.status); // 상태 업데이트
@@ -116,7 +121,9 @@ public class ApplicationService {
   public void deleteApplication(Long applicationId) {
     Application application = getApplicationByApplicationId(applicationId);
 
-    application.getProject().changeCurTeamSize(application.getStatus(), null);
+    if (application.getStatus() == ApplicationStatus.APPROVED) {
+      application.getProject().decreaseCurTeamSize();
+    }
 
     applicationRepository.delete(application); // DB 에서 삭제
   }
