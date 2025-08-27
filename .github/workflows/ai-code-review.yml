@@ -53,8 +53,8 @@ jobs:
             const fileReviews = [];
             const javaToKotlinMigration = [];
             
-            // 파일별 리뷰 (최대 5개)
-            for (const file of reviewableFiles.slice(0, 5)) {
+            // 파일별 리뷰 (최대 3개, 1개씩 순차 처리)
+            for (const file of reviewableFiles.slice(0, 3)) {
               const fileType = file.filename.endsWith('.java') ? 'Java' : 'Kotlin';
               const isNewFile = file.status === 'added';
               
@@ -67,6 +67,11 @@ jobs:
               
               if (isMigration && fileType === 'Kotlin') {
                 javaToKotlinMigration.push(file.filename);
+              }
+              
+              // Rate limit 방지: 각 요청 사이 2초 대기
+              if (fileReviews.length > 0) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
               }
               
               try {
@@ -137,7 +142,7 @@ jobs:
                       ${file.patch || 'No patch available'}
                       \`\`\``
                     }],
-                    max_tokens: 1500,
+                    max_tokens: 4000,
                     temperature: 0.3
                   })
                 });
