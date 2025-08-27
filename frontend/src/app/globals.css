@@ -1,0 +1,318 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+  }
+
+  .dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Neobrutalism Design System */
+.shadow-brutal-sm {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+.shadow-brutal {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+.shadow-brutal-lg {
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+}
+.shadow-brutal-xl {
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Hover States */
+.hover\:shadow-brutal-sm:hover {
+  box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 1);
+}
+.hover\:shadow-brutal:hover {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+.hover\:shadow-brutal-lg:hover {
+  box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Active States */
+.active\:shadow-none:active {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Neobrutalism Component Styles */
+.neo-brutal {
+  border-width: 2px;
+  border-color: black;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  transition-property: all;
+  transition-duration: 200ms;
+}
+
+.neo-brutal:hover {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.neo-brutal:active {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.neo-brutal-lg {
+  border-width: 2px;
+  border-color: black;
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+  transition-property: all;
+  transition-duration: 200ms;
+}
+
+.neo-brutal-lg:hover {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Card Styles */
+.neo-card {
+  background-color: white;
+  border-width: 2px;
+  border-color: black;
+  border-radius: 0.5rem;
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.neo-card:hover {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Button Styles */
+.neo-btn {
+  font-weight: bold;
+  border-width: 2px;
+  border-color: black;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  transition-property: all;
+  transition-duration: 200ms;
+}
+
+.neo-btn:hover {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.neo-btn:active {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Input Styles */
+.neo-input {
+  border-width: 2px;
+  border-color: black;
+  transition-property: all;
+  transition-duration: 200ms;
+}
+
+.neo-input:focus {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Accessibility Improvements */
+
+/* Enhanced Focus States */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 4px solid #7c3aed;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .neo-brutal,
+  .neo-brutal-lg,
+  .neo-card,
+  .neo-btn,
+  .card-neon,
+  .btn-neon {
+    border-width: 3px;
+    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1) !important;
+  }
+  
+  .neo-brutal:hover,
+  .neo-brutal-lg:hover,
+  .neo-card:hover,
+  .neo-btn:hover,
+  .card-neon:hover,
+  .btn-neon:hover {
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1) !important;
+  }
+  
+  /* Increase color contrast */
+  .bg-gradient-to-r,
+  .bg-gradient-to-br {
+    filter: contrast(1.2);
+  }
+}
+
+/* Keyboard Navigation Indicators */
+.keyboard-nav *:focus {
+  outline: 4px solid #7c3aed !important;
+  outline-offset: 2px !important;
+}
+
+/* Skip Navigation Link */
+.skip-nav {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #7c3aed;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+  font-weight: bold;
+  z-index: 999;
+  border: 2px solid black;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.skip-nav:focus {
+  top: 0;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus Ring Colors by Element Type */
+button:focus-visible,
+a:focus-visible {
+  outline-color: #7c3aed;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline-color: #2563eb;
+}
+
+/* Card Focus States */
+.card:focus-visible,
+.neo-card:focus-visible {
+  outline: 4px solid #7c3aed;
+  outline-offset: 4px;
+}
+
+/* 추가된 Neobrutalism 스타일 */
+.card-neon {
+  border-width: 2px;
+  border-color: black;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  transition: all 0.2s ease;
+}
+
+.card-neon:hover {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  transform: translate(2px, 2px);
+}
+
+.badge-neon {
+  border-width: 1px;
+  border-color: black;
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.btn-neon {
+  font-weight: bold;
+  border-width: 2px;
+  border-color: black;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  transition: all 0.2s ease;
+}
+
+.btn-neon:hover {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  transform: translate(2px, 2px);
+}
+
+.btn-neon:active {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+  transform: translate(4px, 4px);
+}

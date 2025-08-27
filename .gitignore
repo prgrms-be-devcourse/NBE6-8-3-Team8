@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.vs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/
+*claude*
+
+# Environment files
+.env
+.env.local
+*.secret
+
+# Database files
+*.db
+*.trace.db
+db_*
