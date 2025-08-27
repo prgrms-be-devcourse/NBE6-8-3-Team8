@@ -59,8 +59,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     //여기까진 모든 필터에서 적용되는 부분. 로그인을 했냐 안했냐로 시점이 나뉨
     //로그인을 안했으면 이 밑으로는 진행이 안됨.
     //로그인 url로 요청 들어온거면 토큰 검사확인 불필요
-    if (request.getRequestURI().startsWith("/oauth2/authorization/") || request.getRequestURI()
-        .startsWith("/login/oauth2/code/")) {
+    if (request.getRequestURI().startsWith("/oauth2/authorization/") ||
+        request.getRequestURI().startsWith("/login/oauth2/code/")) {
       filterChain.doFilter(request, response);
       return;
     }

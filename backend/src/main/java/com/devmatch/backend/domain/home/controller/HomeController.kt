@@ -1,21 +1,17 @@
-package com.devmatch.backend.domain.home.controller;
+package com.devmatch.backend.domain.home.controller
 
-import static java.net.InetAddress.getLocalHost;
-import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
-
-import java.net.InetAddress;
-import lombok.SneakyThrows;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RestController
+import java.net.InetAddress
 
 @RestController
-public class HomeController {
+class HomeController {
+    @GetMapping(produces = [MediaType.TEXT_HTML_VALUE])
+    fun main(): String {
+        val localHost = InetAddress.getLocalHost()
 
-  @SneakyThrows
-  @GetMapping(produces = TEXT_HTML_VALUE)
-  public String main() {
-    InetAddress localHost = getLocalHost();
-    return """
+        return """
         <html>
         <head>
           <meta charset="UTF-8">
@@ -35,8 +31,8 @@ public class HomeController {
         </head>
         <body>
           <h1>API 서버</h1>
-          <p>Host Name: %s</p>
-          <p>Host Address: %s</p>
+          <p>Host Name: ${localHost.hostName}</p>
+          <p>Host Address: ${localHost.hostAddress}</p>
           <div>
               <a href="/oauth2/authorization/kakao"
                  class="p-2 rounded hover:bg-gray-100">카카오 로그인</a>
@@ -50,7 +46,8 @@ public class HomeController {
           </div>
         </body>
         </html>
-        """.formatted(localHost.getHostName(), localHost.getHostAddress());
-  }
+        
+        """.trimIndent()
+    }
 }
 
