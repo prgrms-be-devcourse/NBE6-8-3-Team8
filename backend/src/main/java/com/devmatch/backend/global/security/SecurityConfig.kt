@@ -86,6 +86,7 @@ class SecurityConfig(
         val configuration = CorsConfiguration().apply {
             allowedOrigins = listOf(
                 "http://localhost:3000",
+                "https://nbe-6-8-2-team08-vaug.vercel.app",
                 "https://www.devmatch.store",
                 "https://devmatch.store"
             )
