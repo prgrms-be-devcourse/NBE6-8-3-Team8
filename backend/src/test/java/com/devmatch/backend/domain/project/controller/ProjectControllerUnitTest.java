@@ -95,8 +95,8 @@ class ProjectControllerUnitTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.msg").value("프로젝트 생성 성공"))
-        .andExpect(jsonPath("$.data.id").value(response.id()))
-        .andExpect(jsonPath("$.data.title").value(response.title()));
+        .andExpect(jsonPath("$.data.id").value(response.id))
+        .andExpect(jsonPath("$.data.title").value(response.title));
 
     verify(projectService, times(1)).createProject(rq.getActor().getId(), request);
   }
@@ -144,10 +144,10 @@ class ProjectControllerUnitTest {
         .andExpect(jsonPath("$.msg").value("프로젝트 전체 조회 성공"))
         .andExpect(jsonPath("$.data").isArray())
         .andExpect(jsonPath("$.data", hasSize(2)))
-        .andExpect(jsonPath("$.data[0].id").value(project1.id()))
-        .andExpect(jsonPath("$.data[0].title").value(project1.title()))
-        .andExpect(jsonPath("$.data[1].id").value(project2.id()))
-        .andExpect(jsonPath("$.data[1].title").value(project2.title()));
+        .andExpect(jsonPath("$.data[0].id").value(project1.id))
+        .andExpect(jsonPath("$.data[0].title").value(project1.title))
+        .andExpect(jsonPath("$.data[1].id").value(project2.id))
+        .andExpect(jsonPath("$.data[1].title").value(project2.title));
 
     verify(projectService, times(1)).getProjects();
   }
@@ -172,16 +172,16 @@ class ProjectControllerUnitTest {
   void getProject_shouldReturnProject_whenIdExists() throws Exception {
     ProjectDetailResponse response = createProjectDetailResponse(1L, "새 프로젝트");
 
-    given(projectService.getProjectDetail(response.id())).willReturn(response);
+    given(projectService.getProjectDetail(response.id)).willReturn(response);
 
-    mockMvc.perform(get("/projects/{id}", response.id())
+    mockMvc.perform(get("/projects/{id}", response.id)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.msg").value("프로젝트 단일 조회 성공"))
-        .andExpect(jsonPath("$.data.id").value(response.id()))
-        .andExpect(jsonPath("$.data.title").value(response.title()));
+        .andExpect(jsonPath("$.data.id").value(response.id))
+        .andExpect(jsonPath("$.data.title").value(response.title));
 
-    verify(projectService, times(1)).getProjectDetail(response.id());
+    verify(projectService, times(1)).getProjectDetail(response.id);
   }
 
   @Test
@@ -207,22 +207,22 @@ class ProjectControllerUnitTest {
 
     ProjectDetailResponse updatedResponse = new ProjectDetailResponse(
         1L, "새 프로젝트", "프로젝트 설명", List.of("Java", "Spring Boot"),
-        5, 4, "testUser", request.status().toString(),
+        5, 4, "testUser", request.status.toString(),
         "content", 4, LocalDateTime.now()
     );
 
-    given(projectService.modifyStatus(updatedResponse.id(), request.status())).willReturn(
+    given(projectService.modifyStatus(updatedResponse.id, request.status)).willReturn(
         updatedResponse);
 
-    mockMvc.perform(patch("/projects/{id}/status", updatedResponse.id())
+    mockMvc.perform(patch("/projects/{id}/status", updatedResponse.id)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.msg").value("프로젝트 상태 수정 성공"))
-        .andExpect(jsonPath("$.data.id").value(updatedResponse.id()))
-        .andExpect(jsonPath("$.data.status").value(request.status().toString()));
+        .andExpect(jsonPath("$.data.id").value(updatedResponse.id))
+        .andExpect(jsonPath("$.data.status").value(request.status.toString()));
 
-    verify(projectService, times(1)).modifyStatus(updatedResponse.id(), request.status());
+    verify(projectService, times(1)).modifyStatus(updatedResponse.id, request.status);
   }
 
   @Test
@@ -259,7 +259,7 @@ class ProjectControllerUnitTest {
     Long nonExistentId = 999L;
     ProjectStatusUpdateRequest request = new ProjectStatusUpdateRequest(ProjectStatus.COMPLETED);
 
-    given(projectService.modifyStatus(nonExistentId, request.status()))
+    given(projectService.modifyStatus(nonExistentId, request.status))
         .willThrow(new NoSuchElementException("조회하려는 프로젝트가 없습니다"));
 
     mockMvc.perform(patch("/projects/{id}/status", nonExistentId)

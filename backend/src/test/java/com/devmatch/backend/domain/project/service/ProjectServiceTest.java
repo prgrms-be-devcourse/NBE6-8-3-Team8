@@ -51,12 +51,12 @@ class ProjectServiceTest {
     );
 
     Project savedProject = new Project(
-        projectCreateRequest.title(),
-        projectCreateRequest.description(),
-        projectCreateRequest.techStack(),
-        projectCreateRequest.teamSize(),
+        projectCreateRequest.title,
+        projectCreateRequest.description,
+        projectCreateRequest.techStack,
+        projectCreateRequest.teamSize,
         user,
-        projectCreateRequest.durationWeeks()
+        projectCreateRequest.durationWeeks
     );
     ReflectionTestUtils.setField(savedProject, "id", 1L);
 
@@ -67,10 +67,10 @@ class ProjectServiceTest {
         projectCreateRequest);
 
     assertThat(response).isNotNull();
-    assertThat(response.id()).isEqualTo(savedProject.getId());
-    assertThat(response.title()).isEqualTo(savedProject.getTitle());
-    assertThat(response.creator()).isEqualTo(savedProject.getCreator().getNickName());
-    assertThat(response.techStacks()).isEqualTo(
+    assertThat(response.id).isEqualTo(savedProject.getId());
+    assertThat(response.title).isEqualTo(savedProject.getTitle());
+    assertThat(response.creator).isEqualTo(savedProject.getCreator().getNickName());
+    assertThat(response.techStacks).isEqualTo(
         Arrays.stream(savedProject.getTechStack().split(", ")).toList());
 
     verify(userService, times(1)).getUser(user.getId());
@@ -96,10 +96,10 @@ class ProjectServiceTest {
 
     ProjectDetailResponse response = responses.getFirst();
     assertThat(response).isNotNull();
-    assertThat(response.id()).isEqualTo(project1.getId());
-    assertThat(response.title()).isEqualTo(project1.getTitle());
-    assertThat(response.creator()).isEqualTo(project1.getCreator().getNickName());
-    assertThat(response.techStacks()).isEqualTo(
+    assertThat(response.id).isEqualTo(project1.getId());
+    assertThat(response.title).isEqualTo(project1.getTitle());
+    assertThat(response.creator).isEqualTo(project1.getCreator().getNickName());
+    assertThat(response.techStacks).isEqualTo(
         Arrays.stream(project1.getTechStack().split(", ")).toList());
 
     verify(projectRepository, times(1)).findAll();
@@ -136,10 +136,10 @@ class ProjectServiceTest {
 
     ProjectDetailResponse response = responses.getFirst();
     assertThat(response).isNotNull();
-    assertThat(response.id()).isEqualTo(project1.getId());
-    assertThat(response.title()).isEqualTo(project1.getTitle());
-    assertThat(response.creator()).isEqualTo(project1.getCreator().getNickName());
-    assertThat(response.techStacks()).isEqualTo(
+    assertThat(response.id).isEqualTo(project1.getId());
+    assertThat(response.title).isEqualTo(project1.getTitle());
+    assertThat(response.creator).isEqualTo(project1.getCreator().getNickName());
+    assertThat(response.techStacks).isEqualTo(
         Arrays.stream(project1.getTechStack().split(", ")).toList());
 
     verify(projectRepository, times(1)).findAllByCreatorId(user1.getId());
@@ -171,10 +171,10 @@ class ProjectServiceTest {
     ProjectDetailResponse response = projectService.getProjectDetail(project1.getId());
 
     assertThat(response).isNotNull();
-    assertThat(response.id()).isEqualTo(project1.getId());
-    assertThat(response.title()).isEqualTo(project1.getTitle());
-    assertThat(response.creator()).isEqualTo(user1.getNickName());
-    assertThat(response.techStacks()).isEqualTo(
+    assertThat(response.id).isEqualTo(project1.getId());
+    assertThat(response.title).isEqualTo(project1.getTitle());
+    assertThat(response.creator).isEqualTo(user1.getNickName());
+    assertThat(response.techStacks).isEqualTo(
         Arrays.stream(project1.getTechStack().split(", ")).toList());
 
     verify(projectRepository, times(1)).findById(project1.getId());
@@ -198,10 +198,10 @@ class ProjectServiceTest {
         ProjectStatus.COMPLETED);
 
     assertThat(response).isNotNull();
-    assertThat(response.status()).isEqualTo(ProjectStatus.COMPLETED.toString());
-    assertThat(response.id()).isEqualTo(project1.getId());
-    assertThat(response.title()).isEqualTo(project1.getTitle());
-    assertThat(response.creator()).isEqualTo(project1.getCreator().getNickName());
+    assertThat(response.status).isEqualTo(ProjectStatus.COMPLETED.toString());
+    assertThat(response.id).isEqualTo(project1.getId());
+    assertThat(response.title).isEqualTo(project1.getTitle());
+    assertThat(response.creator).isEqualTo(project1.getCreator().getNickName());
 
     verify(projectRepository, times(1)).findById(project1.getId());
   }
@@ -226,10 +226,10 @@ class ProjectServiceTest {
     ProjectDetailResponse response = projectService.modifyContent(project1.getId(), newContent);
 
     assertThat(response).isNotNull();
-    assertThat(response.content()).isEqualTo(newContent);
-    assertThat(response.id()).isEqualTo(project1.getId());
-    assertThat(response.title()).isEqualTo(project1.getTitle());
-    assertThat(response.creator()).isEqualTo(project1.getCreator().getNickName());
+    assertThat(response.content).isEqualTo(newContent);
+    assertThat(response.id).isEqualTo(project1.getId());
+    assertThat(response.title).isEqualTo(project1.getTitle());
+    assertThat(response.creator).isEqualTo(project1.getCreator().getNickName());
 
     verify(projectRepository, times(1)).findById(project1.getId());
   }
