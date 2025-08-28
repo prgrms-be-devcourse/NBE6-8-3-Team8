@@ -65,7 +65,7 @@ class ProjectControllerIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.status").value(request.status.name()));
+        .andExpect(jsonPath("$.data.status").value(request.getStatus().name()));
 
     entityManager.flush();
     entityManager.clear();
@@ -73,7 +73,7 @@ class ProjectControllerIntegrationTest {
     Project updatedProject = projectRepository.findById(testProject.getId())
         .orElseThrow(() -> new AssertionError("테스트 프로젝트를 찾을 수 없습니다."));
 
-    assertThat(updatedProject.getStatus()).isEqualTo(request.status);
+    assertThat(updatedProject.getStatus()).isEqualTo(request.getStatus());
     assertThat(updatedProject.getStatus()).isNotEqualTo(ProjectStatus.RECRUITING);
   }
 
