@@ -19,7 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val customAuthenticationFilter: CustomAuthenticationFilter,
     private val customOAuth2LoginSuccessHandler: AuthenticationSuccessHandler,
-//    private val customOAuth2AuthorizationRequestResolver: CustomOAuth2AuthorizationRequestResolver
+    private val customOAuth2AuthorizationRequestResolver: CustomOAuth2AuthorizationRequestResolver
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
@@ -49,9 +49,9 @@ class SecurityConfig(
             oauth2Login {
                 authenticationSuccessHandler = customOAuth2LoginSuccessHandler
 
-//                authorizationEndpoint {
-//                    authorizationRequestResolver = customOAuth2AuthorizationRequestResolver
-//                }
+                authorizationEndpoint {
+                    authorizationRequestResolver = customOAuth2AuthorizationRequestResolver
+                }
             }
 
             addFilterBefore<UsernamePasswordAuthenticationFilter>(customAuthenticationFilter)
