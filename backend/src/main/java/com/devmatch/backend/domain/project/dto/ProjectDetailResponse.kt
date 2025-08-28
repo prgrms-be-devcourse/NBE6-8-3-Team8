@@ -1,20 +1,17 @@
-package com.devmatch.backend.domain.project.dto;
+package com.devmatch.backend.domain.project.dto
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDateTime
 
-public record ProjectDetailResponse(
-    Long id,
-    String title,
-    String description,
-    List<String> techStacks,
-    Integer teamSize,
-    Integer currentTeamSize,
-    String creator,
-    String status,
-    String content,
-    Integer durationWeeks,
-    LocalDateTime createdAt
-) {
-
-}
+data class ProjectDetailResponse(
+    val id: Long,
+    val title: String,
+    val description: String,
+    val techStacks: List<String>,
+    val teamSize: Int,
+    val currentTeamSize: Int,
+    val creator: String,
+    val status: String,
+    val content: String,
+    val durationWeeks: Int,
+    val createdAt: LocalDateTime
+) 

@@ -1,8 +1,5 @@
-package com.devmatch.backend.domain.project.dto;
+package com.devmatch.backend.domain.project.dto
 
-import com.devmatch.backend.domain.project.entity.ProjectStatus;
-import jakarta.validation.constraints.NotNull;
+import com.devmatch.backend.domain.project.entity.ProjectStatus
 
-public record ProjectStatusUpdateRequest(@NotNull ProjectStatus status) {
-
-}
+data class ProjectStatusUpdateRequest(val status: ProjectStatus)
