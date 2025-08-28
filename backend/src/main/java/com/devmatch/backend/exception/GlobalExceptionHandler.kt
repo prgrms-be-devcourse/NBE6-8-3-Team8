@@ -1,47 +1,38 @@
-package com.devmatch.backend.exception;
+package com.devmatch.backend.exception
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
-import com.devmatch.backend.global.ApiResponse;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import com.devmatch.backend.global.ApiResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+class GlobalExceptionHandler {
 
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ApiResponse<Void>> handle(MethodArgumentNotValidException ex) {
-    String message = ex.getBindingResult()
-        .getAllErrors()
-        .stream()
-        .map(error -> (FieldError) error)
-        .map(error -> error.getField() + "-" + error.getCode() + "-" + error.getDefaultMessage())
-        .collect(Collectors.joining("\n"));
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Void>> {
+        val message = ex.bindingResult
+            .allErrors
+            .map { it as FieldError }
+            .joinToString("\n") { error -> "${error.field}-${error.code}-${error.defaultMessage}" }
 
-    return ResponseEntity.badRequest().body(new ApiResponse<>(message));
-  }
+        return ResponseEntity.badRequest().body(ApiResponse(message))
+    }
 
-  @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ApiResponse<Void>> handleHttpMessageNotReadable(
-      HttpMessageNotReadableException ex
-  ) {
-    return ResponseEntity.badRequest()
-        .body(new ApiResponse<>("요청 값이 올바르지 않습니다: " + ex.getMostSpecificCause().getMessage()));
-  }
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleHttpMessageNotReadable(ex: HttpMessageNotReadableException): ResponseEntity<ApiResponse<Void>> {
+        return ResponseEntity.badRequest()
+            .body(ApiResponse("요청 값이 올바르지 않습니다: " + ex.mostSpecificCause.message))
+    }
 
-  @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<ApiResponse<Void>> handle(IllegalArgumentException ex) {
-    return ResponseEntity.badRequest().body(new ApiResponse<>(ex.getMessage()));
-  }
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<ApiResponse<Void>> =
+        ResponseEntity.badRequest().body(ApiResponse(ex.message))
 
-  @ExceptionHandler(NoSuchElementException.class)
-  public ResponseEntity<ApiResponse<Void>> handle(NoSuchElementException ex) {
-    return ResponseEntity.status(NOT_FOUND).body(new ApiResponse<>(ex.getMessage()));
-  }
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNoSuchElement(ex: NoSuchElementException): ResponseEntity<ApiResponse<Void>> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse(ex.message))
 }
