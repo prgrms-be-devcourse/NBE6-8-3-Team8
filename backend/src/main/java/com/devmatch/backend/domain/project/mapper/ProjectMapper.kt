@@ -4,10 +4,10 @@ import com.devmatch.backend.domain.project.dto.ProjectDetailResponse
 import com.devmatch.backend.domain.project.entity.Project
 
 object ProjectMapper {
-    
+
     fun toProjectDetailResponse(project: Project): ProjectDetailResponse {
         return ProjectDetailResponse(
-            project.id,
+            project.id!!,
             project.title,
             project.description,
             project.techStack.split(", "),
