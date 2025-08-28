@@ -19,7 +19,7 @@ class UserService(
     //이거는 타인의 id를 통해 타인을 가져올 때만 쓰셔야 합니다.
     //로그인 한 사람의 정보를 가져오고 싶다면 Rq.actor를 사용하세요.
     @Transactional(readOnly = true)
-    fun getUser(id: Long): User? = userRepository.findById(id).orElseThrow(
+    fun getUser(id: Long): User = userRepository.findById(id).orElseThrow(
         Supplier {
             ServiceException("404-1", "${id}번 회원은 존재하지 않습니다.")
         }
@@ -29,7 +29,7 @@ class UserService(
     fun count(): Long = userRepository.count()
 
     //테스트 계정 생성용
-    fun join(username: String, password: String?, nickname: String) : User =
+    fun join(username: String, password: String?, nickname: String): User =
         join(username, password, nickname, null)
 
     fun join(
@@ -41,7 +41,8 @@ class UserService(
         userRepository.findByUsername(username)?.let {
             throw ServiceException("409-1", "이미 존재하는 아이디입니다.")
         }
-        val encodedPassword =  if(!password.isNullOrBlank()) passwordEncoder.encode(password) else null
+        val encodedPassword =
+            if (!password.isNullOrBlank()) passwordEncoder.encode(password) else null
 
         val user = User(username, encodedPassword, nickname, profileImgUrl)
         return userRepository.save(user)
@@ -59,8 +60,10 @@ class UserService(
 
     fun findById(id: Long): User? = userRepository.findById(id).orElse(null)
 
-    fun modifyOrJoin(username: String, password: String?,
-                     nickname: String, profileImgUrl: String?): RsData<User> =
+    fun modifyOrJoin(
+        username: String, password: String?,
+        nickname: String, profileImgUrl: String?
+    ): RsData<User> =
         findByUsername(username)?.let {
             modify(it, nickname, profileImgUrl)
             RsData("200", "회원정보가 수정되었습니다.", it)
