@@ -23,7 +23,7 @@ class SecurityConfig(
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
-        http{
+        http {
             authorizeHttpRequests {
                 authorize("/favicon.ico", permitAll)
                 authorize("/h2-console/**", permitAll)
@@ -84,7 +84,11 @@ class SecurityConfig(
     @Bean // CORS 설정을 위한 Bean 등록
     fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:3000", "https://nbe-6-8-2-team08-vaug.vercel.app")
+            allowedOrigins = listOf(
+                "http://localhost:3000",
+                "https://www.devmatch.store",
+                "https://devmatch.store"
+            )
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
             allowCredentials = true
             allowedHeaders = listOf("*")
