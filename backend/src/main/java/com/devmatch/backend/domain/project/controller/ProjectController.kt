@@ -1,87 +1,98 @@
-package com.devmatch.backend.domain.project.controller;
+package com.devmatch.backend.domain.project.controller
 
-import static org.springframework.http.HttpStatus.CREATED;
+import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto
+import com.devmatch.backend.domain.application.service.ApplicationService
+import com.devmatch.backend.domain.project.dto.*
+import com.devmatch.backend.domain.project.service.ProjectService
+import com.devmatch.backend.global.ApiResponse
+import com.devmatch.backend.global.rq.Rq
+import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
-import com.devmatch.backend.domain.application.dto.response.ApplicationDetailResponseDto;
-import com.devmatch.backend.domain.application.service.ApplicationService;
-import com.devmatch.backend.domain.project.dto.*;
-import com.devmatch.backend.domain.project.service.ProjectService;
-import com.devmatch.backend.global.ApiResponse;
-import com.devmatch.backend.global.rq.Rq;
-import jakarta.validation.Valid;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/projects")
-public class ProjectController {
+class ProjectController(
+    private val rq: Rq,
+    private val projectService: ProjectService,
+    private val applicationService: ApplicationService
+) {
 
-  private final Rq rq;
+    @PostMapping
+    fun create(
+        @Valid @RequestBody projectCreateRequest: ProjectCreateRequest
+    ): ResponseEntity<ApiResponse<ProjectDetailResponse>> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ApiResponse(
+                "프로젝트 생성 성공",
+                projectService.createProject(rq.actor.id, projectCreateRequest)
+            )
+        )
+    }
 
-  private final ProjectService projectService;
-  private final ApplicationService applicationService;
+    @GetMapping
+    fun getAll(): ResponseEntity<ApiResponse<List<ProjectDetailResponse>>> =
+        ResponseEntity.ok(ApiResponse("프로젝트 전체 조회 성공", projectService.getProjects()))
 
-  @PostMapping
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> create(
-      @Valid @RequestBody ProjectCreateRequest projectCreateRequest
-  ) {
-    return ResponseEntity.status(CREATED).body(new ApiResponse<>("프로젝트 생성 성공",
-        projectService.createProject(rq.getActor().getId(), projectCreateRequest)));
-  }
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): ResponseEntity<ApiResponse<ProjectDetailResponse>> =
+        ResponseEntity.ok(ApiResponse("프로젝트 단일 조회 성공", projectService.getProjectDetail(id)))
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<List<ProjectDetailResponse>>> getAll() {
-    return ResponseEntity.ok()
-        .body(new ApiResponse<>("프로젝트 전체 조회 성공", projectService.getProjects()));
-  }
+    @PatchMapping("/{id}/status")
+    fun modifyStatus(
+        @PathVariable id: Long,
+        @Valid @RequestBody projectStatusUpdateRequest: ProjectStatusUpdateRequest
+    ): ResponseEntity<ApiResponse<ProjectDetailResponse>> {
+        return ResponseEntity.ok(
+            ApiResponse(
+                "프로젝트 상태 수정 성공",
+                projectService.modifyStatus(id, projectStatusUpdateRequest.status)
+            )
+        )
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> get(@PathVariable Long id) {
-    return ResponseEntity.ok()
-        .body(new ApiResponse<>("프로젝트 단일 조회 성공", projectService.getProjectDetail(id)));
-  }
+    @PatchMapping("/{id}/content")
+    fun modifyContent(
+        @PathVariable id: Long,
+        @Valid @RequestBody projectContentUpdateRequest: ProjectContentUpdateRequest
+    ): ResponseEntity<ApiResponse<ProjectDetailResponse>> {
+        return ResponseEntity.ok(
+            ApiResponse(
+                "역할 배분 내용 수정 성공",
+                projectService.modifyContent(id, projectContentUpdateRequest.content)
+            )
+        )
+    }
 
-  @PatchMapping("/{id}/status")
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> modifyStatus(
-      @PathVariable Long id,
-      @Valid @RequestBody ProjectStatusUpdateRequest projectStatusUpdateRequest
-  ) {
-    return ResponseEntity.ok().body(new ApiResponse<>("프로젝트 상태 수정 성공",
-        projectService.modifyStatus(id, projectStatusUpdateRequest.status())));
-  }
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long): ResponseEntity<Void> {
+        projectService.deleteProject(id)
+        return ResponseEntity.noContent().build()
+    }
 
-  @PatchMapping("/{id}/content")
-  public ResponseEntity<ApiResponse<ProjectDetailResponse>> modifyContent(
-      @PathVariable Long id,
-      @Valid @RequestBody ProjectContentUpdateRequest projectContentUpdateRequest
-  ) {
-    return ResponseEntity.ok().body(new ApiResponse<>("역할 배분 내용 수정 성공",
-        projectService.modifyContent(id, projectContentUpdateRequest.content())));
-  }
+    @GetMapping("/{id}/applications")
+    fun getApplications(
+        @PathVariable id: Long
+    ): ResponseEntity<ApiResponse<List<ApplicationDetailResponseDto>>> {
+        return ResponseEntity.ok(
+            ApiResponse(
+                "프로젝트의 지원서 전체 목록 조회 성공",
+                applicationService.getApplicationsByProjectId(id)
+            )
+        )
+    }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
-    projectService.deleteProject(id);
-    return ResponseEntity.noContent().build();
-  }
-
-  @GetMapping("/{id}/applications")
-  public ResponseEntity<ApiResponse<List<ApplicationDetailResponseDto>>> getApplications(
-      @PathVariable Long id
-  ) {
-    return ResponseEntity.ok().body(new ApiResponse<>("프로젝트의 지원서 전체 목록 조회 성공",
-        applicationService.getApplicationsByProjectId(id)));
-  }
-
-  @PostMapping("/{id}/applications")
-  public ResponseEntity<ApiResponse<ApplicationDetailResponseDto>> apply(
-      @PathVariable Long id,
-      @Valid @RequestBody ProjectApplyRequest projectApplyRequest
-  ) {
-    return ResponseEntity.ok().body(new ApiResponse<>("지원서 작성 성공",
-        applicationService.createApplication(id, projectApplyRequest)));
-  }
+    @PostMapping("/{id}/applications")
+    fun apply(
+        @PathVariable id: Long,
+        @Valid @RequestBody projectApplyRequest: ProjectApplyRequest
+    ): ResponseEntity<ApiResponse<ApplicationDetailResponseDto>> {
+        return ResponseEntity.ok(
+            ApiResponse(
+                "지원서 작성 성공",
+                applicationService.createApplication(id, projectApplyRequest)
+            )
+        )
+    }
 }
