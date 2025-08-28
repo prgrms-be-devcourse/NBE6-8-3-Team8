@@ -1,92 +1,83 @@
-package com.devmatch.backend.domain.project.service;
+package com.devmatch.backend.domain.project.service
 
-import com.devmatch.backend.domain.project.dto.ProjectCreateRequest;
-import com.devmatch.backend.domain.project.dto.ProjectDetailResponse;
-import com.devmatch.backend.domain.project.entity.Project;
-import com.devmatch.backend.domain.project.entity.ProjectStatus;
-import com.devmatch.backend.domain.project.mapper.ProjectMapper;
-import com.devmatch.backend.domain.project.repository.ProjectRepository;
-import com.devmatch.backend.domain.user.service.UserService;
-import java.util.List;
-import java.util.NoSuchElementException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.devmatch.backend.domain.project.dto.ProjectCreateRequest
+import com.devmatch.backend.domain.project.dto.ProjectDetailResponse
+import com.devmatch.backend.domain.project.entity.Project
+import com.devmatch.backend.domain.project.entity.ProjectStatus
+import com.devmatch.backend.domain.project.mapper.ProjectMapper
+import com.devmatch.backend.domain.project.repository.ProjectRepository
+import com.devmatch.backend.domain.user.service.UserService
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
-@RequiredArgsConstructor
 @Service
-public class ProjectService {
+class ProjectService(
+    private val userService: UserService,
+    private val projectRepository: ProjectRepository,
+) {
 
-  private final UserService userService;
+    @Transactional
+    fun createProject(
+        userId: Long,
+        projectCreateRequest: ProjectCreateRequest
+    ): ProjectDetailResponse {
+        require(projectCreateRequest.techStack.matches("^([\\w .+#-]+)(, [\\w .+#-]+)*$".toRegex())) {
+            "기술 스택 기재 형식이 올바르지 않습니다. \", \"로 구분해주세요"
+        }
 
-  private final ProjectRepository projectRepository;
+        val project = Project(
+            title = projectCreateRequest.title,
+            description = projectCreateRequest.description,
+            techStack = projectCreateRequest.techStack,
+            teamSize = projectCreateRequest.teamSize,
+            creator = userService.getUser(userId),
+            durationWeeks = projectCreateRequest.durationWeeks
+        )
 
-  @Transactional
-  public ProjectDetailResponse createProject(
-      Long userId,
-      ProjectCreateRequest projectCreateRequest
-  ) {
-    if (!projectCreateRequest.techStack().matches("^([\\w .+#-]+)(, [\\w .+#-]+)*$")) {
-      throw new IllegalArgumentException("기술 스택 기재 형식이 올바르지 않습니다. \", \"로 구분해주세요");
+        return ProjectMapper.toProjectDetailResponse(projectRepository.save(project))
     }
 
-    Project project = new Project(
-        projectCreateRequest.title(),
-        projectCreateRequest.description(),
-        projectCreateRequest.techStack(),
-        projectCreateRequest.teamSize(),
-        userService.getUser(userId),
-        projectCreateRequest.durationWeeks()
-    );
+    @Transactional(readOnly = true)
+    fun getProjects(): List<ProjectDetailResponse> {
+        return projectRepository.findAll().map { ProjectMapper.toProjectDetailResponse(it) }
+    }
 
-    return ProjectMapper.toProjectDetailResponse(projectRepository.save(project));
-  }
+    @Transactional(readOnly = true)
+    fun getProjectsByUserId(userId: Long): List<ProjectDetailResponse> {
+        return projectRepository.findAllByCreatorId(userId)
+            .map { ProjectMapper.toProjectDetailResponse(it) }
+    }
 
-  @Transactional(readOnly = true)
-  public List<ProjectDetailResponse> getProjects() {
-    return projectRepository.findAll()
-        .stream()
-        .map(ProjectMapper::toProjectDetailResponse)
-        .toList();
-  }
+    @Transactional(readOnly = true)
+    fun getProjectDetail(projectId: Long): ProjectDetailResponse {
+        return ProjectMapper.toProjectDetailResponse(getProject(projectId))
+    }
 
-  @Transactional(readOnly = true)
-  public List<ProjectDetailResponse> getProjectsByUserId(Long userId) {
-    return projectRepository.findAllByCreatorId(userId)
-        .stream()
-        .map(ProjectMapper::toProjectDetailResponse)
-        .toList();
-  }
+    @Transactional
+    fun modifyStatus(projectId: Long, status: ProjectStatus): ProjectDetailResponse {
+        val project = getProject(projectId)
+        project.changeStatus(status)
 
-  @Transactional(readOnly = true)
-  public ProjectDetailResponse getProjectDetail(Long projectId) {
-    return ProjectMapper.toProjectDetailResponse(getProject(projectId));
-  }
+        return ProjectMapper.toProjectDetailResponse(project)
+    }
 
-  @Transactional
-  public ProjectDetailResponse modifyStatus(Long projectId, ProjectStatus status) {
-    Project project = getProject(projectId);
-    project.changeStatus(status);
+    @Transactional
+    fun modifyContent(projectId: Long, content: String): ProjectDetailResponse {
+        val project = getProject(projectId)
+        project.content = content
 
-    return ProjectMapper.toProjectDetailResponse(project);
-  }
+        return ProjectMapper.toProjectDetailResponse(project)
+    }
 
-  @Transactional
-  public ProjectDetailResponse modifyContent(Long projectId, String content) {
-    Project project = getProject(projectId);
-    project.setContent(content);
-    
-    return ProjectMapper.toProjectDetailResponse(project);
-  }
+    @Transactional
+    fun deleteProject(projectId: Long) {
+        getProject(projectId)
+        projectRepository.deleteById(projectId)
+    }
 
-  @Transactional
-  public void deleteProject(Long projectId) {
-    getProject(projectId);
-    projectRepository.deleteById(projectId);
-  }
-
-  public Project getProject(Long projectId) {
-    return projectRepository.findById(projectId)
-        .orElseThrow(() -> new NoSuchElementException("조회하려는 프로젝트가 없습니다"));
-  }
+    fun getProject(projectId: Long): Project {
+        return projectRepository.findByIdOrNull(projectId)
+            ?: throw NoSuchElementException("조회하려는 프로젝트가 없습니다")
+    }
 }

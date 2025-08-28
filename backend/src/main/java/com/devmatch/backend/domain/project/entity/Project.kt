@@ -15,6 +15,7 @@ class Project(
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "creator_id") val creator: User,
     val durationWeeks: Int
 ) {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
