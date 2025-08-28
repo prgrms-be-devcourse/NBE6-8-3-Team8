@@ -121,7 +121,7 @@ class AnalysisService(
             reason = reason
         )
 
-        applicationService.saveAnalysisResult(result.application!!.id, result)
+        applicationService.saveAnalysisResult(result.application!!.id!!, result)
 
         return analysisRepository.save(result)
     }
@@ -154,7 +154,7 @@ class AnalysisService(
             // 각 팀원의 기술 스택 점수 상세 분석
             append("👥 팀원 기술 역량 분석:\n")
             approvedApplications.forEachIndexed { index, application ->
-                append("팀원 ${index + 1}: ${application.user.nickName}\n")
+                append("팀원 ${index + 1}: ${application.user.nickname}\n")
                 
                 application.skillScore.forEach { skill ->
                     append("  • ${skill.techName}: ${skill.score}/10점\n")
