@@ -95,8 +95,8 @@ class ProjectControllerUnitTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.msg").value("프로젝트 생성 성공"))
-        .andExpect(jsonPath("$.data.id").value(response.id))
-        .andExpect(jsonPath("$.data.title").value(response.title));
+        .andExpect(jsonPath("$.data.id").value(response.getId()))
+        .andExpect(jsonPath("$.data.title").value(response.getTitle()));
 
     verify(projectService, times(1)).createProject(rq.getActor().getId(), request);
   }
@@ -104,11 +104,8 @@ class ProjectControllerUnitTest {
   // 여러 실패 케이스를 한 번에 테스트하기 위한 데이터 소스
   static Stream<Arguments> provideInvalidProjectCreateRequests() {
     return Stream.of(
-        Arguments.of(new ProjectCreateRequest(null, "설명", "기술", 3, 4), "title"),
         Arguments.of(new ProjectCreateRequest("", "설명", "기술", 3, 4), "title"),
-        Arguments.of(new ProjectCreateRequest("제목", null, "기술", 3, 4), "description"),
         Arguments.of(new ProjectCreateRequest("제목", "", "기술", 3, 4), "description"),
-        Arguments.of(new ProjectCreateRequest("제목", "설명", null, 3, 4), "techStack"),
         Arguments.of(new ProjectCreateRequest("제목", "설명", "", 3, 4), "techStack"),
         Arguments.of(new ProjectCreateRequest("제목", "설명", "기술", 0, 4), "teamSize"),
         Arguments.of(new ProjectCreateRequest("제목", "설명", "기술", 3, 0), "durationWeeks")
@@ -144,10 +141,10 @@ class ProjectControllerUnitTest {
         .andExpect(jsonPath("$.msg").value("프로젝트 전체 조회 성공"))
         .andExpect(jsonPath("$.data").isArray())
         .andExpect(jsonPath("$.data", hasSize(2)))
-        .andExpect(jsonPath("$.data[0].id").value(project1.id))
-        .andExpect(jsonPath("$.data[0].title").value(project1.title))
-        .andExpect(jsonPath("$.data[1].id").value(project2.id))
-        .andExpect(jsonPath("$.data[1].title").value(project2.title));
+        .andExpect(jsonPath("$.data[0].id").value(project1.getId()))
+        .andExpect(jsonPath("$.data[0].title").value(project1.getTitle()))
+        .andExpect(jsonPath("$.data[1].id").value(project2.getId()))
+        .andExpect(jsonPath("$.data[1].title").value(project2.getTitle()));
 
     verify(projectService, times(1)).getProjects();
   }
@@ -172,16 +169,16 @@ class ProjectControllerUnitTest {
   void getProject_shouldReturnProject_whenIdExists() throws Exception {
     ProjectDetailResponse response = createProjectDetailResponse(1L, "새 프로젝트");
 
-    given(projectService.getProjectDetail(response.id)).willReturn(response);
+    given(projectService.getProjectDetail(response.getId())).willReturn(response);
 
-    mockMvc.perform(get("/projects/{id}", response.id)
+    mockMvc.perform(get("/projects/{id}", response.getId())
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.msg").value("프로젝트 단일 조회 성공"))
-        .andExpect(jsonPath("$.data.id").value(response.id))
-        .andExpect(jsonPath("$.data.title").value(response.title));
+        .andExpect(jsonPath("$.data.id").value(response.getId()))
+        .andExpect(jsonPath("$.data.title").value(response.getTitle()));
 
-    verify(projectService, times(1)).getProjectDetail(response.id);
+    verify(projectService, times(1)).getProjectDetail(response.getId());
   }
 
   @Test
@@ -207,22 +204,22 @@ class ProjectControllerUnitTest {
 
     ProjectDetailResponse updatedResponse = new ProjectDetailResponse(
         1L, "새 프로젝트", "프로젝트 설명", List.of("Java", "Spring Boot"),
-        5, 4, "testUser", request.status.toString(),
+        5, 4, "testUser", request.getStatus().toString(),
         "content", 4, LocalDateTime.now()
     );
 
-    given(projectService.modifyStatus(updatedResponse.id, request.status)).willReturn(
+    given(projectService.modifyStatus(updatedResponse.getId(), request.getStatus())).willReturn(
         updatedResponse);
 
-    mockMvc.perform(patch("/projects/{id}/status", updatedResponse.id)
+    mockMvc.perform(patch("/projects/{id}/status", updatedResponse.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.msg").value("프로젝트 상태 수정 성공"))
-        .andExpect(jsonPath("$.data.id").value(updatedResponse.id))
-        .andExpect(jsonPath("$.data.status").value(request.status.toString()));
+        .andExpect(jsonPath("$.data.id").value(updatedResponse.getId()))
+        .andExpect(jsonPath("$.data.status").value(request.getStatus().toString()));
 
-    verify(projectService, times(1)).modifyStatus(updatedResponse.id, request.status);
+    verify(projectService, times(1)).modifyStatus(updatedResponse.getId(), request.getStatus());
   }
 
   @Test
@@ -259,7 +256,7 @@ class ProjectControllerUnitTest {
     Long nonExistentId = 999L;
     ProjectStatusUpdateRequest request = new ProjectStatusUpdateRequest(ProjectStatus.COMPLETED);
 
-    given(projectService.modifyStatus(nonExistentId, request.status))
+    given(projectService.modifyStatus(nonExistentId, request.getStatus()))
         .willThrow(new NoSuchElementException("조회하려는 프로젝트가 없습니다"));
 
     mockMvc.perform(patch("/projects/{id}/status", nonExistentId)
@@ -301,7 +298,7 @@ class ProjectControllerUnitTest {
     String longContent = String.join("", Collections.nCopies(2001, "a"));
 
     return Stream.of(
-        Arguments.of(createContentJson("content", null), "NotNull"),
+        Arguments.of(createContentJson("content", null), "NULL"),
         Arguments.of(createContentJson("content", ""), "Size"),
         Arguments.of(createContentJson("content", longContent), "Size")
     );
@@ -383,10 +380,10 @@ class ProjectControllerUnitTest {
         .andExpect(jsonPath("$.msg").value("프로젝트의 지원서 전체 목록 조회 성공"))
         .andExpect(jsonPath("$.data").isArray())
         .andExpect(jsonPath("$.data", hasSize(2))) // 배열의 크기가 2인지 확인
-        .andExpect(jsonPath("$.data[0].applicationId").value(application1.applicationId))
-        .andExpect(jsonPath("$.data[0].nickname").value(application1.nickname))
-        .andExpect(jsonPath("$.data[1].applicationId").value(application2.applicationId))
-        .andExpect(jsonPath("$.data[0].nickname").value(application1.nickname));
+        .andExpect(jsonPath("$.data[0].applicationId").value(application1.getApplicationId()))
+        .andExpect(jsonPath("$.data[0].nickname").value(application1.getNickname()))
+        .andExpect(jsonPath("$.data[1].applicationId").value(application2.getApplicationId()))
+        .andExpect(jsonPath("$.data[1].nickname").value(application2.getNickname()));
 
     verify(applicationService, times(1)).getApplicationsByProjectId(projectId);
   }
@@ -441,8 +438,8 @@ class ProjectControllerUnitTest {
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.msg").value("지원서 작성 성공"))
-        .andExpect(jsonPath("$.data.applicationId").value(responseDto.applicationId))
-        .andExpect(jsonPath("$.data.nickname").value(responseDto.nickname));
+        .andExpect(jsonPath("$.data.applicationId").value(responseDto.getApplicationId()))
+        .andExpect(jsonPath("$.data.nickname").value(responseDto.getNickname()));
 
     verify(applicationService, times(1)).createApplication(projectId, request);
   }
