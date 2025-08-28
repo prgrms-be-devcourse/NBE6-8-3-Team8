@@ -32,9 +32,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleIllegalArgument(ex: IllegalArgumentException): ApiResponse<Void> =
-        ApiResponse(ex.message)
+        ApiResponse(ex.message ?: "유효하지 않은 인자입니다")
 
     @ExceptionHandler(NoSuchElementException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    fun handleNoSuchElement(ex: NoSuchElementException): ApiResponse<Void> = ApiResponse(ex.message)
+    fun handleNoSuchElement(ex: NoSuchElementException): ApiResponse<Void> =
+        ApiResponse(ex.message ?: "요청한 리소스를 찾을 수 없습니다")
 }

@@ -1,8 +1,3 @@
-package com.devmatch.backend.global;
+package com.devmatch.backend.global
 
-public record ApiResponse<T>(String msg, T data) {
-
-  public ApiResponse(String msg) {
-    this(msg, null);
-  }
-}
+data class ApiResponse<T>(val msg: String, val data: T? = null)
