@@ -57,11 +57,9 @@ class Rq(
         val cookie = Cookie(name, value ?: "").apply {
             path = "/"
             isHttpOnly = true
-            val scheme = req.scheme
-            if (scheme == "https") {
-                secure = true
-            }
-            setAttribute("SameSite", "None")
+            secure = true
+            domain = "devmatch.store"
+            setAttribute("SameSite", "Strict")//LAX
             maxAge = if (value.isNullOrBlank()) 0 else 60 * 60 * 24 * 365
         }
 

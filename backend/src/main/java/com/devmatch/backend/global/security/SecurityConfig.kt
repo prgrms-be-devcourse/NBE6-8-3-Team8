@@ -84,12 +84,7 @@ class SecurityConfig(
     @Bean // CORS 설정을 위한 Bean 등록
     fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf(
-                "http://localhost:3000",
-                "https://nbe-6-8-2-team08-vaug.vercel.app",
-                "https://www.devmatch.store",
-                "https://devmatch.store"
-            )
+            allowedOrigins = listOf("http://localhost:3000", "https://nbe-6-8-2-team08-vaug.vercel.app", "https://www.devmatch.store")
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
             allowCredentials = true
             allowedHeaders = listOf("*")
