@@ -5,15 +5,14 @@
 FROM amazoncorretto:21-al2023-jdk AS builder
 
 WORKDIR /app
-COPY gradlew ./
-COPY gradle ./
 COPY build.gradle.kts settings.gradle.kts ./
+COPY gradlew ./
+COPY gradle ./gradle
 
-RUN chmod +x ./gradlew
 RUN dnf install -y findutils
 RUN ./gradlew --no-daemon dependencies
 
-COPY src ./
+COPY src ./src
 RUN ./gradlew --no-daemon bootJar -x test
 
 # ==================================================
