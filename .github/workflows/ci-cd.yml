@@ -3,7 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ "main" ]
-
+    
+  pull_request:
+      branches: [ "main" ]
+      
 jobs:
   # ==================================
   # CI Job: 빌드 및 테스트
