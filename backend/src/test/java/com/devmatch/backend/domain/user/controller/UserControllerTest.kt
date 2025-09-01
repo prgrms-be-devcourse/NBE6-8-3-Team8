@@ -79,4 +79,6 @@ class UserControllerTest {
             .andExpect(jsonPath("$.username").value(testUser.username))
             .andExpect(jsonPath("$.nickname").value(testUser.nickname))
     }
+
+
 }
