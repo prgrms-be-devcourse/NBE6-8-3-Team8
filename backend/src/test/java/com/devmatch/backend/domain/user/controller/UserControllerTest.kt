@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import kotlin.test.Test
 
-
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -49,7 +50,9 @@ class UserControllerTest {
         projectService = mock(ProjectService::class.java)
         applicationService = mock(ApplicationService::class.java)
 
-        mockMvc = MockMvcBuilders.standaloneSetup(UserController(rq, projectService, applicationService)).build()
+        mockMvc =
+            MockMvcBuilders.standaloneSetup(UserController(rq, projectService, applicationService))
+                .build()
     }
 
 
