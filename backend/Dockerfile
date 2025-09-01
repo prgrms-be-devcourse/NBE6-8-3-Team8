@@ -10,6 +10,7 @@ COPY gradle ./
 COPY build.gradle.kts settings.gradle.kts ./
 
 RUN chmod +x ./gradlew
+RUN dnf install -y findutils
 RUN ./gradlew --no-daemon dependencies
 
 COPY src ./
